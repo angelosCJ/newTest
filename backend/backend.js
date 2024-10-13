@@ -13,19 +13,19 @@ mongoose.connect("mongodb+srv://kadurienzo:ballsdeep%402025@mern.zylr0.mongodb.n
 .catch((error) => console.log('Error connecting to MongoDB:', error));
 
 const port = process.env.PORT || 3000;
-app.listen(port,()=>{
+app.listen(port, () => {
   console.log("Port 3000 is awake and running");
 });
 
-app.post("/auth", async (req,res)=>{
-    const {name,email,password} = req.body;
+app.post("/auth", async (req, res) => {
+    const { name, email, password } = req.body;
     try {
-        const hashedPassword = bcrypt.hash(password,10);
-        const addUser = new userModel({name,email,password:hashedPassword});
+        const hashedPassword = await bcrypt.hash(password, 10); // Await the hash function
+        const addUser = new userModel({ name, email, password: hashedPassword });
         await addUser.save();
-        res.status(200).send("New user Saved and Added in the Database");
+        res.status(200).send("New user saved and added to the database");
     } catch (error) {
         res.status(500).send("Unable to send user credentials");
-        console.log(error);
+        console.log("Error:", error);
     }
 });
