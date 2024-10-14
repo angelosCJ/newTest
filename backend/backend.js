@@ -29,3 +29,25 @@ app.post("/auth", async (req, res) => {
         console.log("Error:", error);
     }
 });
+
+app.post("/login",async(req,res)=>{
+  const {email,password} = req.body;
+  try {
+    const userRecord = await userModel.findOne({email:email});
+
+      if (!userRecord) {
+        return res.status(404).json("User record doesn't exist");
+      }
+
+   const isPasswordValid = await bcrypt.compare(password,userRecord.password);
+
+   if (isPasswordValid) {
+    return res.status(200).json("Log in Successful");
+   }else{
+    return res.status(401).json("Wrong password");
+   }
+
+  } catch (error) {
+    return res.status(500).json({message:"Authentication error has occured ",error});
+  }
+});
